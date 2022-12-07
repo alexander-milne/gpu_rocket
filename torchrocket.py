@@ -10,7 +10,7 @@ class TorchRocket(torch.nn.Module):
         if kernels is None and (num_timesteps is None or num_channels is None):
             raise ValueError('Must provide either kernels or num_timesteps and num_channels')
         self.convs = nn.ModuleList()
-        self.torch_channel_indices = []
+        self.torch_channel_indices = nn.ParameterList()
         if kernels is None:
             self._build_layers_from_scratch(num_timesteps,num_channels,num_kernels=num_kernels)
         else:
@@ -28,7 +28,7 @@ class TorchRocket(torch.nn.Module):
         kernel_lengths = [kernel_lengths_possibilities[x] for x in torch.randint(0, 3, (num_kernels,))]
         possible_channels = torch.IntTensor([x for x in range(num_channels)])
         kernel_channels = [possible_channels[torch.randperm(num_channels)[:n_select]] for n_select in torch.randint(1, num_channels, (num_kernels,))]
-        self.torch_channel_indices = [nn.Parameter(x,requires_grad=False) for x in kernel_channels]
+        self.torch_channel_indices = nn.ParameterList([nn.Parameter(x,requires_grad=False) for x in kernel_channels])
         weights = [torch.randn(1, kernel_channels[i].shape[0], kernel_lengths[i]) for i in range(len(kernel_lengths))]
         for c_weight in weights:
                 for channel in range(c_weight.shape[1]):
