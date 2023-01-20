@@ -82,7 +82,7 @@ class TorchRocket(torch.nn.Module):
             outs.append(self._ppv(_x).view(-1))
             gap_out = self.maxpool(_x)
             outs.append(gap_out.view(-1))
-        out = torch.cat(outs, axis=-1)
+        out = torch.stack(outs, axis=-1)
         return out
 
 
