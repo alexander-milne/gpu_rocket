@@ -79,10 +79,9 @@ class TorchRocket(torch.nn.Module):
         for i,kernel in enumerate(self.convs):
             _x = torch.index_select(x, dim=-2, index=self.torch_channel_indices[i])
             _x = kernel(_x)
-            outs.append(self._ppv(_x).view(-1))
-            gap_out = self.maxpool(_x)
-            outs.append(gap_out.view(-1))
-        out = torch.stack(outs, axis=-1)
+            outs.append(self._ppv(_x))
+            outs.append(torch.max(_x, dim=-1)[0])
+        out = torch.cat(outs, axis=-1)
         return out
 
 
