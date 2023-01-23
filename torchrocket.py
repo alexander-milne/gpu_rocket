@@ -5,7 +5,7 @@ import numpy as np
 from numba import njit
 
 class TorchRocket(torch.nn.Module):
-    def __init__(self,kernels=None,num_timesteps=None,num_channels=None,num_kernels=10_000,ppv_ver='softPPV',softppv_param=7.):
+    def __init__(self,kernels=None,num_timesteps=None,num_channels=None,num_kernels=10_000,ppv_ver='heaviside_PPV',softppv_param=7.):
         super(TorchRocket, self).__init__()
         if kernels is None and (num_timesteps is None or num_channels is None):
             raise ValueError('Must provide either kernels or num_timesteps and num_channels')
