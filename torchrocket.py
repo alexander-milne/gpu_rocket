@@ -15,7 +15,6 @@ class TorchRocket(torch.nn.Module):
             self._build_layers_from_scratch(num_timesteps,num_channels,num_kernels=num_kernels)
         else:
             self._build_layers_with_kernels(kernels)
-        self.maxpool = nn.AdaptiveMaxPool1d((1))
         if ppv_ver=='softPPV':
             self._ppv=self.softppv
             self.softppv_param = softppv_param
