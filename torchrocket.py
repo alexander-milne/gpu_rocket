@@ -26,7 +26,14 @@ class TorchRocket(torch.nn.Module):
         torch.nn.init.uniform_(biases, a=0.0, b=1.0)
         kernel_lengths = [kernel_lengths_possibilities[x] for x in torch.randint(0, 3, (num_kernels,))]
         possible_channels = torch.IntTensor([x for x in range(num_channels)])
-        kernel_channels = [possible_channels[torch.randperm(num_channels)[:n_select]] for n_select in torch.randint(1, num_channels, (num_kernels,))]
+        if num_channels == 1:
+            # If there's only one channel, we must select it every time.
+            n_select_per_kernel = torch.ones(num_kernels, dtype=torch.long)
+        else:
+            # If there are multiple channels, use the original random selection logic
+            n_select_per_kernel = torch.randint(1, num_channels + 1, (num_kernels,))
+        kernel_channels = [possible_channels[torch.randperm(num_channels)[:n_select]] for n_select in n_select_per_kernel]
+        # kernel_channels = [possible_channels[torch.randperm(num_channels)[:n_select]] for n_select in torch.randint(1, num_channels, (num_kernels,))]
         self.torch_channel_indices = nn.ParameterList([nn.Parameter(x,requires_grad=False) for x in kernel_channels])
         weights = [torch.randn(1, kernel_channels[i].shape[0], kernel_lengths[i]) for i in range(len(kernel_lengths))]
         for c_weight in weights:
