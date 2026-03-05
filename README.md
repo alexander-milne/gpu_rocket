@@ -23,7 +23,7 @@ While PyTorch and GPU acceleration offer massive speedups for large datasets, th
 
 To help you decide whether TorchRocket will be faster for your specific use case, please refer to the crossover chart below. 
 
-![GPU vs CPU Crossover Point](figs/timing_crossover_point_samples.png)
+![GPU vs CPU Crossover Point](timing_crossover_point_samples.png)
 
 **How to read this chart:**
 This heatmap shows the **minimum number of samples** required in a batch for the GPU implementation to outpace the CPU version, mapped across different time series lengths and channel counts. 
