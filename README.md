@@ -39,10 +39,10 @@ This heatmap shows the **minimum number of samples** required in a batch for the
 
 Standard ROCKET uses Proportion of Positive Values (PPV) for pooling, defined via a non-differentiable function.
 
-This repository provides `softPPV`, which approximates the Heaviside function using a shifted sigmoid:
-$\text{SoftPPV}(z;\lambda) = \frac{1}{L}\sum_{i=1}^{L} \frac{1}{1+e^{-(\lambda z_i - 3)}}$
+This repository provides `softPPV`, which mathematically approximates the PPV behavior using a sigmoid:
+$$\text{SoftPPV}(z;\lambda, \beta) = \frac{1}{L}\sum_{i=1}^{L} \frac{1}{1+e^{-(\lambda z_i - \beta)}}$$
 
-The parameter $\lambda$ (configured via `softppv_param`) controls the steepness. A value of `5.0` or `10.0` strongly mimics the original Heaviside function while maintaining gradient flow for PyTorch's `autograd`.
+The parameter $\lambda$ (configured via `softppv_param`) controls the steepness. A value of `5.0` or `10.0` strongly mimics the original non-differentiable behavior while maintaining gradient flow for PyTorch's `autograd`. The parameter $\beta$ (configured via `softppv_shift`) controls an optional shift and defaults to `0.`.
 
 ---
 
