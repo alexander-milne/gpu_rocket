@@ -5,7 +5,7 @@ import numpy as np
 from numba import njit
 
 class TorchRocket(torch.nn.Module):
-    def __init__(self,kernels=None,num_timesteps=None,num_channels=None,num_kernels=10_000,ppv_ver='heaviside_PPV',softppv_param=7.):
+    def __init__(self,kernels=None,num_timesteps=None,num_channels=None,num_kernels=10_000,ppv_ver='heaviside_PPV',softppv_param=7., softppv_shift=0.):
         super(TorchRocket, self).__init__()
         if kernels is None and (num_timesteps is None or num_channels is None):
             raise ValueError('Must provide either kernels or num_timesteps and num_channels')
@@ -18,6 +18,7 @@ class TorchRocket(torch.nn.Module):
         if ppv_ver=='softPPV':
             self._ppv=self.softppv
             self.softppv_param = softppv_param
+            self.softppv_shift = softppv_shift
         elif ppv_ver=='heaviside_PPV':
             self._ppv=self.heaviside_PPV
 
@@ -75,7 +76,7 @@ class TorchRocket(torch.nn.Module):
             start_weights = stop_weights    
 
     def softppv(self,x):
-        return torch.mean(torch.sigmoid((self.softppv_param*x)-3.),-1)
+        return torch.mean(torch.sigmoid((self.softppv_param*x)-self.softppv_shift),-1)
 
     def heaviside_PPV(self,x):
         return torch.mean(torch.heaviside(x,torch.tensor(0.)),-1)
@@ -168,4 +169,5 @@ def _generate_kernels_sktime_32bit_version(n_timepoints, num_kernels, n_columns,
         num_channel_indices,
         channel_indices,
     )
+
 
